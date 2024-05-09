@@ -1,0 +1,9 @@
+services:
+  webapp:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      - TZ=bangkok
+    ports:
+      - 3030:3030

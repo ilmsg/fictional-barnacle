@@ -25,7 +25,12 @@ func PostDetail(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(paramId)
 	fmt.Println("post-detail id:", id)
 
-	post := services.GetPostById(id)
+	post, err := services.GetPostById(id)
+	if err != nil {
+		data := ""
+		utils.RenderHTML(w, data, "layout", "navbar", "notfound")
+		return
+	}
 	data := struct{ Post models.Post }{Post: post}
 
 	utils.RenderHTML(w, data, "layout", "navbar", "posts/detail")
