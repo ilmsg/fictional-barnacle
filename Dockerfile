@@ -1,12 +1,13 @@
 # FROM golang:1.22
 FROM golang:alpine as builder
-WORKDIR /app
+WORKDIR /build
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
 COPY . .
-RUN go mod download
-RUN go mod tidy
-RUN go build -ldflags="-w -s" -o fictional-barnacl cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o fictional ./cmd
 
 FROM alpine
-COPY --from=builder fictional-barnacle fictional-barnacle
+WORKDIR /app
+COPY --from=builder /build/fictional .
 EXPOSE 3030
-CMD ["fictional-barnacle"]
+CMD ["/app/fictional"]
